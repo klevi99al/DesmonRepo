@@ -1,4 +1,3 @@
-using System.Net;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,7 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private Vector2 movementInput;
 
-    private int animatorState;
+    private int movementHash;
+    private bool isGrounded = true;
 
     private void Start()
     {
@@ -32,20 +32,26 @@ public class PlayerMovement : MonoBehaviour
         playerActionMap["Movement"].performed += context => movementInput = context.ReadValue<Vector2>();
         playerActionMap["Movement"].canceled += _ => movementInput = Vector2.zero;
 
-        animatorState = Animator.StringToHash("state");
+        movementHash = Animator.StringToHash("IsMoving");
     }
 
     private void Update()
     {
-        HandlePlayerMovement();
-        HandlePlayerRotation();
-        HandlePlayerAnimations();
+        if (canMove)
+        {
+            HandlePlayerMovement();
+            HandlePlayerRotation();
+            HandlePlayerAnimations();
+        }
+
+        isGrounded = IsGrounded();
     }
 
     private void HandlePlayerAnimations()
     {
-        animator.SetInteger(animatorState, movementInput != Vector2.zero ? 1 : 0);
+        animator.SetBool(movementHash, movementInput != Vector2.zero);
     }
+
 
     private void HandlePlayerMovement()
     {
@@ -70,22 +76,20 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && canMove)
         {
-            if(IsGrounded()) rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            if (isGrounded)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                animator.SetTrigger("Jump");
+            }
         }
-    }
-
-    public void IncreaseState()
-    {
-        animator.SetInteger(animatorState, animator.GetInteger(animatorState) + 1);
     }
 
     private bool IsGrounded()
     {
         Vector2 boxCastOrigin = transform.position;
         RaycastHit2D hit = Physics2D.BoxCast(boxCastOrigin, playerCollider.bounds.size, 0f, Vector2.down, 0.1f, groundLayer);
-
         return hit.collider != null;
     }
 }

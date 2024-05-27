@@ -20,8 +20,8 @@ public class Level1DialogueManager : MonoBehaviour
     {
         score = protagonist.GetComponent<Score>();
         //Start with first dialogue
-        dialogueManager.StartDialogue();
-        StartCoroutine(PlayInitialDialogue());
+        //dialogueManager.StartDialogue();
+        //StartCoroutine(PlayInitialDialogue());
     
     }
 

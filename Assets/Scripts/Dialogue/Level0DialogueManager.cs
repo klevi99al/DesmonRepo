@@ -12,21 +12,15 @@ public class Level0DialogueManager : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public GameObject enemy01;
     public GameObject protagonist;
-    public ProtagonistBaseMovements protagonistMovements;
+    public PlayerMovement protagonistMovements;
     public LevelLoader levelLoader;
     public Tilemap tilemap;
     void Start()
     {
         //Start with first dialogue
-        dialogueManager.StartDialogue();
-        StartCoroutine(PlayInitialDialogue());
+        //dialogueManager.StartDialogue();
+        //StartCoroutine(PlayInitialDialogue());
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    } 
 
     IEnumerator PlayInitialDialogue()
     {
@@ -65,11 +59,6 @@ public class Level0DialogueManager : MonoBehaviour
  
     }
 
-    // private void spawnEnemy()
-    // {
-    //     Vector3 spawnPosition = protagonistMovements.transform.position + protagonistMovements.transform.forward;
-    //     Instantiate(Enemy01, spawnPosition, Quaternion.identity);
-    // }
     public bool IsCloserToFurthestLeftTile()
     {
         Vector3 protagonistPosition = protagonist.transform.position;

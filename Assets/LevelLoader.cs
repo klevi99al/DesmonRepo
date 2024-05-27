@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-   public Animator anim; 
-   public Animator protagonistAnimator;
-   public float transitionTime = 10f; 
+   [SerializeField] private Animator anim;
+   [SerializeField] private Animator protagonistAnimator;
+   [SerializeField] private float transitionTime = 10f; 
 
  
     public void LoadNextLevel(){
