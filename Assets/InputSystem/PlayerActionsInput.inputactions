@@ -24,9 +24,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Harvest",
+                    "name": "Plant",
                     "type": "Button",
                     "id": "3d285ed3-edbb-4aa6-a706-e0c9fa721ea9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Harvest",
+                    "type": "Button",
+                    "id": "164c148b-8026-4cd7-ba85-0880f2488780",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -116,7 +125,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Harvest",
+                    "action": "Plant",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -128,6 +137,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbd0a383-e5eb-4480-83e3-8c252278cd92",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Harvest",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

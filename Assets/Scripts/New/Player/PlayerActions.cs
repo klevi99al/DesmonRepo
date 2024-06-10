@@ -9,6 +9,9 @@ public class PlayerActions : MonoBehaviour
     [SerializeField] private GameObject downAttackArea;
     [SerializeField] private Animator playerAnimator;
 
+    [Header("Player Harvest Properties")]
+    [SerializeField] private Planting plantingScript;
+
     [HideInInspector] public bool canAttack = true;
     [HideInInspector] public bool isAttacking = false;
     private float attackTimer;
@@ -20,6 +23,8 @@ public class PlayerActions : MonoBehaviour
         attackTimer = attackTime;
         playerActionMap = GetComponent<PlayerInput>().actions.FindActionMap("Player");
         playerActionMap["Shoot"].performed += Shoot;
+        playerActionMap["Plant"].performed += Plant;
+        playerActionMap["Harvest"].performed += Harvest;
     }
 
     private void Update()
@@ -50,5 +55,17 @@ public class PlayerActions : MonoBehaviour
             forwardAttackArea.SetActive(true);
             playerAnimator.SetLayerWeight(1, 1);
         }
+    }
+
+    public void Plant(InputAction.CallbackContext context)
+    {
+        Debug.Log("Pressed P");
+        plantingScript.ReplaceGhostPlantWithPlant();
+    }
+
+    public void Harvest(InputAction.CallbackContext context)
+    {
+        Debug.Log("Pressed H");
+        plantingScript.Harvest();
     }
 }

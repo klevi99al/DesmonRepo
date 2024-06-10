@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movementInput;
 
     private int movementHash;
+    private int jumpHash;
     private bool isGrounded = true;
 
     private void Start()
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
         playerActionMap["Movement"].canceled += _ => movementInput = Vector2.zero;
 
         movementHash = Animator.StringToHash("IsMoving");
+        jumpHash = Animator.StringToHash("Jump");
     }
 
     private void Update()
@@ -81,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
             if (isGrounded)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                animator.SetTrigger("Jump");
+                animator.SetTrigger(jumpHash);
             }
         }
     }

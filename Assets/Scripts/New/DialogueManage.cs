@@ -22,15 +22,15 @@ public class DialogueManage : MonoBehaviour
         }
     }
 
-    public void PlayDialogue(TMP_Text text, string[] dialogues, float delayBetweenEachLetter = 0.01f, float delayBetweenWords = 5f)
+    public void PlayDialogue(TMP_Text text, string[] dialogues, float delayBetweenEachLetter = 0.01f, float delayBetweenLines = 5f)
     {
         if (!dialogueIsPlaying)
         {
-            StartCoroutine(PlayDialogueCoroutine(text, dialogues, delayBetweenEachLetter, delayBetweenWords));
+            StartCoroutine(PlayDialogueCoroutine(text, dialogues, delayBetweenEachLetter, delayBetweenLines));
         }
     }
 
-    private IEnumerator PlayDialogueCoroutine(TMP_Text text, string[] dialogues, float delayBetweenEachLetter, float delayBetweenWords)
+    private IEnumerator PlayDialogueCoroutine(TMP_Text text, string[] dialogues, float delayBetweenEachLetter, float delayBetweenLines)
     {
         dialogueIsPlaying = true;
 
@@ -44,7 +44,7 @@ public class DialogueManage : MonoBehaviour
                 yield return new WaitForSeconds(delayBetweenEachLetter);
             }
             currentSentenceNumber++;
-            yield return new WaitForSeconds(delayBetweenWords);
+            yield return new WaitForSeconds(delayBetweenLines);
         }
         currentSentenceNumber = 0;
         dialogueIsPlaying = false;

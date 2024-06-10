@@ -1,21 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
 
 
 public class LevelLoader : MonoBehaviour
 {
-   [SerializeField] private Animator anim;
-   [SerializeField] private Animator protagonistAnimator;
-   [SerializeField] private float transitionTime = 10f; 
+    [SerializeField] private Animator anim;
+    public Animator protagonistAnimator;
+    [SerializeField] private float transitionTime = 10f;
 
- 
-    public void LoadNextLevel(){
+
+    public void LoadNextLevel()
+    {
         StartCoroutine(ReturnToNavigate());
     }
 
-    public IEnumerator ReturnToNavigate(){
+    public IEnumerator ReturnToNavigate()
+    {
         // yield return StartCoroutine(PlayDieAnimation());
         anim.SetTrigger("start");
         yield return new WaitForSeconds(transitionTime);
@@ -26,7 +28,7 @@ public class LevelLoader : MonoBehaviour
     {
         // Set the Damage layer weight to 1
         protagonistAnimator.SetLayerWeight(protagonistAnimator.GetLayerIndex("damage"), 1);
-        protagonistAnimator.SetBool("die",true);
+        protagonistAnimator.SetBool("die", true);
         anim.SetTrigger("start");
         // Wait for 3 seconds
         yield return new WaitForSeconds(5);

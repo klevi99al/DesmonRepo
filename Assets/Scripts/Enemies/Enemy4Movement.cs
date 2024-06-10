@@ -72,8 +72,8 @@ public class Enemy4Movement : EnemyMovement
             float moveDirection = !isFlipped ? 1 : -1;
             FaceProtagonist();
 
-            if (anim.GetInteger("state") == 2 || anim.GetInteger("state") == 5) Health.CanDamage = true;
-            else Health.CanDamage = false;
+            if (anim.GetInteger("state") == 2 || anim.GetInteger("state") == 5) Health.canDamage = true;
+            else Health.canDamage = false;
 
             if( anim.GetInteger("state") == 0 ) anim.SetInteger("state", 1);
 

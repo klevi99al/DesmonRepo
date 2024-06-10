@@ -6,10 +6,11 @@ public class SpawningAnimation : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject gameObjectToSpawn;
+    public Transform enemyParent;
     public void SpawnGameObject()
     {
         if (gameObjectToSpawn == null) return;
-        Instantiate(gameObjectToSpawn, this.transform.position, Quaternion.identity);
+        Instantiate(gameObjectToSpawn, transform.position, Quaternion.identity, enemyParent);
     }
     public void Destroy()
     {

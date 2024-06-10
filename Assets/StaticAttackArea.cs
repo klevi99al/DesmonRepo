@@ -1,24 +1,24 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StaticAttackArea : MonoBehaviour
 {
-    // a static attack area for enemies to attack the protagonist
-    public GameObject protagonist;
-    public Rigidbody2D protagonistRB; 
-    public Animator protagonistAnimator; 
-    public ProtagonistHealth protagonistHealth; 
+    private GameObject protagonist;
+    private Rigidbody2D protagonistRB;
+    private Animator protagonistAnimator;
+    private ProtagonistHealth protagonistHealth;
     public int damageAmount = 1;
     private BoxCollider2D selfCollider;
-    private bool previousState;
+    private int damageHashID;
+
     void Start()
     {
-        //protagonist =  GameObject.Find("Protagonist");
+        protagonist = FindObjectOfType<PlayerMovement>().gameObject;
         protagonistRB = protagonist.GetComponent<Rigidbody2D>();
-        protagonistHealth = protagonist.GetComponent<ProtagonistHealth>(); 
+        protagonistHealth = protagonist.GetComponent<ProtagonistHealth>();
         protagonistAnimator = protagonist.GetComponent<Animator>();
         selfCollider = GetComponent<BoxCollider2D>();
+        damageHashID = Animator.StringToHash("DamagePlayer");
     }
     private void OnEnable()
     {
@@ -28,18 +28,13 @@ public class StaticAttackArea : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     private bool IsContained() // fully or partially contained 
     {
 
         if (selfCollider != null && protagonistRB != null)
         {
             Bounds colliderBounds = selfCollider.bounds;
-            Bounds rigidbodyBounds = new Bounds(protagonistRB.position, selfCollider.size);
+            Bounds rigidbodyBounds = new(protagonistRB.position, selfCollider.size);
 
             // Check for intersection between the bounds
             return colliderBounds.Intersects(rigidbodyBounds);
@@ -53,20 +48,21 @@ public class StaticAttackArea : MonoBehaviour
     private IEnumerator ProtagonistDamageDelay(float amount)
     {
         yield return new WaitForSeconds(amount);
-        protagonistHealth.Damage(damageAmount,this.transform.parent.gameObject);
-        protagonistAnimator.SetBool("damage",true);
+        DamageProtagonist();
     }
-    private void OnTriggerEnter2D(Collider2D protagonistCollider)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if(protagonistCollider.name=="Protagonist"){
-            protagonistHealth.Damage(damageAmount,this.transform.parent.gameObject);
-            protagonistAnimator.SetBool("damage",true);
+        // i am not sure why this script is contained in the enemies and in the player attack areas too, and it checks for the player only
+        // but if what we want to do is damage the player, im gonna remove this script from the player and keep it only in the enemies too
+        if (collider.gameObject.layer == 9)
+        {
+            DamageProtagonist();
         }
     }
 
     public void DamageProtagonist()
     {
-        protagonistHealth.Damage(damageAmount, this.transform.parent.gameObject);
-        protagonistAnimator.SetBool("damage", true);
+        protagonistHealth.Damage(damageAmount, transform.parent.gameObject);
+        protagonistAnimator.SetTrigger(damageHashID);
     }
 }

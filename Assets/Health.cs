@@ -1,30 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Health : EnemyMovement
 {
-    [SerializeField] public int health; 
-    private int MAX_HEALTH = 6;
-    public bool CanDamage = true;
+    public int health;
+    private readonly int MAX_HEALTH = 6;
+    public bool canDamage = true;
 
-    public Animator enemyAnimator; 
+    public Animator enemyAnimator;
 
-    public HealthDisplay healthDisplay; 
+    public HealthDisplay healthDisplay;
 
-    void Start(){
-
-    }
-
-    void update(){
-        CanDamage = enemyAnimator.GetLayerWeight(enemyAnimator.GetLayerIndex("Damage")) == 0 && enemyAnimator.GetLayerWeight(enemyAnimator.GetLayerIndex("Die")) == 0;
-    }
-    public void Damage(int amount){
-        if (CanDamage)
+    //void update()
+    //{
+    //    canDamage = enemyAnimator.GetLayerWeight(enemyAnimator.GetLayerIndex("Damage")) == 0 && enemyAnimator.GetLayerWeight(enemyAnimator.GetLayerIndex("Die")) == 0;
+    //}
+    public void Damage(int amount)
+    {
+        if (canDamage)
         {
-            if (amount > 0) {
+            if (amount > 0)
+            {
                 SetDamageLayer();
-                this.health -= amount;
+                health -= amount;
             }
 
             if (health <= 0) Die();
@@ -34,20 +31,23 @@ public class Health : EnemyMovement
                 healthDisplay.updateHealthDisplay();
             }
         }
-        
+
     }
-    public void Heal(int amount){
-         if(amount > 0)
+    public void Heal(int amount)
+    {
+        if (amount > 0)
         {
-            this.health = Mathf.Min(this.health+amount,MAX_HEALTH);
+            health = Mathf.Min(health + amount, MAX_HEALTH);
         }
     }
-    private void Die(){
+    private void Die()
+    {
         enemyAnimator.SetLayerWeight(enemyAnimator.GetLayerIndex("Die"), 1);
 
     }
 
-    private void SetDamageLayer(){
+    private void SetDamageLayer()
+    {
         enemyAnimator.SetLayerWeight(enemyAnimator.GetLayerIndex("Damage"), 1);
     }
 

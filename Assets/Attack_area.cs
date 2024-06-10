@@ -14,7 +14,6 @@ public class Attack_area : MonoBehaviour
     public SpriteRenderer spriteRenderer;
 
     private bool attackMaxReached = false;
-    public ProtagonistBaseMovements protagonistBaseMovement; 
 
 
     private void OnTriggerEnter2D(Collider2D collider){
@@ -24,9 +23,14 @@ public class Attack_area : MonoBehaviour
             // attackMaxReached = true;
             // StartCoroutine(ResetAttackMax());
             //TODO: protagonist can attack multiple at once
-            protagonistBaseMovement.AttackObject(collider);
+            //protagonistBaseMovement.AttackObject(collider);
             Health componentHealth = collider.GetComponent<Health>();
             componentHealth.Damage(damage);
+            if(componentHealth.health < 0)
+            {
+                PlayerStats.Instance.currentLevelKills++;
+                PlayerStats.Instance.playerKills++;
+            }
             gameObject.SetActive(false);
             
         }

@@ -1,90 +1,88 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.DefaultInputActions;
 
 public class ProtagonistHealth : MonoBehaviour
 {
-    [SerializeField] public int health = 5; 
-    public int MAX_HEALTH = 5; 
+    public int health = 5;
+    public int MAX_HEALTH = 5;
 
-    public Animator anim; 
+    public Animator anim;
     public Rigidbody2D rb;
-    public HealthDisplay healthDisplay; 
+    public HealthDisplay healthDisplay;
+    public LevelLoader levelLoader;
+    public PlayerMovement playerMovement;
+    public PlayerActions playerActions;
 
-    void Start(){
+    private bool canTakeDamage = true; // we use this bool as sometimes the player gets damaged so fast that almost makes him uncontrollable, lets add a little bit of damage cooldown
+    public float damageCooldown = 0.5f;
+    void Start()
+    {
         StartCoroutine(RechargeHeartsAtInterval(45f));
     }
 
-    void Update(){
-        Debug.Log("HEALTH" + health);
-        if (health <= 1)
+    public void Damage(int amount, GameObject enemy)
+    {
+        if (canTakeDamage && amount > 0)
         {
-            Debug.Log("Protagonist is dead");
-            Die();
-        }
-    }
-    public void Damage(int amount,GameObject enemy){
-        if(amount > 0)
-        {
-            this.health -= amount;
-            if (anim != null)
+            health -= amount;
+
+            if (health > 0)
             {
-                if((enemy.transform.position-rb.transform.position).x>0) rb.velocity = new Vector2(-5,10);
-                // negative attack is to left (bounce right )
-                else rb.velocity = new Vector2(5,10);
+                if ((enemy.transform.position - rb.transform.position).x > 0) rb.velocity = new Vector2(-5, 10);
+                else rb.velocity = new Vector2(5, 10);
 
                 StartCoroutine(PlayDamageAnimation());
-                // move up animation layer to produce damage
-                
-            } 
-        }
-       
 
-        if(healthDisplay != null)
-        {
-            Debug.Log("Damaging Health Display");
-            healthDisplay.updateHealthDisplay();
-        }
-        
-        
-    }
+                canTakeDamage = false;
+                StartCoroutine(nameof(DamageCooldown));
+            }
+            else
+            {
+                Die();
+            }
 
-    public void Heal(int amount){
-         if(amount > 0)
-        {
-            this.health = Mathf.Min(this.health+amount,MAX_HEALTH);
-            healthDisplay.updateHealthDisplay();
+            if (healthDisplay != null)
+            {
+                Debug.Log("Damaging Health Display");
+                healthDisplay.updateHealthDisplay();
+            }
         }
     }
 
-    private void Die(){
-        anim.SetLayerWeight(anim.GetLayerIndex("damage"), 1f); // Activate the layer
-        anim.SetTrigger("die");
-        // Destroy(gameObject,1f);
+    private IEnumerator DamageCooldown()
+    {
+        yield return new WaitForSeconds(damageCooldown);
+        canTakeDamage = true;
+    }
+
+
+    public void Heal(int amount)
+    {
+        if (amount > 0)
+        {
+            health = Mathf.Min(health + amount, MAX_HEALTH);
+            healthDisplay.updateHealthDisplay();
+        }
+    }
+
+    private void Die()
+    {
+        playerMovement.canMove = false;
+        playerActions.canAttack = false;
+
+        anim.SetLayerWeight(1, 1f);
+        anim.SetTrigger("Die");
+        levelLoader.LoadNextLevel();
     }
 
     private IEnumerator PlayDamageAnimation()
     {
-        anim.SetLayerWeight(anim.GetLayerIndex("damage"), 1f); // Activate the layer
+        anim.SetLayerWeight(1, 1f); // Activate the layer
+        anim.SetTrigger("DamagePlayer");
         yield return new WaitForSeconds(0.3f); // Wait for the specified duration
-        anim.SetLayerWeight(anim.GetLayerIndex("damage"), 0f); // Activate the layer
-    }
-
-    // private IEnumerator PlayDieAnimation()
-    // {
-    //     anim.SetLayerWeight(anim.GetLayerIndex("damage"), 1f); // Activate the layer
-    //     anim.SetTrigger("death");
-    // }
-
-    private void LoadNextLevel()
-    {
-        GameObject.Find("LevelLoader").GetComponent<LevelLoader>().LoadNextLevel();
-        // Load the next level
-    }
-
-    private void deactivate() 
-    {
-        rb.isKinematic = false;
+        anim.SetLayerWeight(1, 0f); // Activate the layer
     }
 
     private IEnumerator RechargeHeartsAtInterval(float interval)
@@ -92,7 +90,7 @@ public class ProtagonistHealth : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(interval);
-            if(health < MAX_HEALTH)
+            if (health < MAX_HEALTH)
             {
                 Heal(1);
                 healthDisplay.updateHealthDisplay();
