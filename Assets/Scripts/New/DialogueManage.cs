@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class DialogueManage : MonoBehaviour
 {
-    private bool dialogueIsPlaying = false;
-
+    public bool dialogueIsPlaying = false;
     public static DialogueManage Instance;
     [HideInInspector] public int currentSentenceNumber = 0;
 
@@ -24,10 +23,9 @@ public class DialogueManage : MonoBehaviour
 
     public void PlayDialogue(TMP_Text text, string[] dialogues, float delayBetweenEachLetter = 0.01f, float delayBetweenLines = 5f)
     {
-        if (!dialogueIsPlaying)
-        {
-            StartCoroutine(PlayDialogueCoroutine(text, dialogues, delayBetweenEachLetter, delayBetweenLines));
-        }
+        StopAllCoroutines();
+        dialogueIsPlaying = false;
+        StartCoroutine(PlayDialogueCoroutine(text, dialogues, delayBetweenEachLetter, delayBetweenLines));
     }
 
     private IEnumerator PlayDialogueCoroutine(TMP_Text text, string[] dialogues, float delayBetweenEachLetter, float delayBetweenLines)

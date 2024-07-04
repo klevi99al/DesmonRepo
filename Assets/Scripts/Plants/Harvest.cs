@@ -8,6 +8,7 @@ public class Harvest : MonoBehaviour
     public GameObject plant; 
     public Score score;
     private Animator anim;
+    public int increaseAmount = 5;
 
     private bool completingHarvest = false;
     void Start()
@@ -18,9 +19,11 @@ public class Harvest : MonoBehaviour
     }
     public void CompleteHarvest(){
         completingHarvest = true;
-        score.IncreaseScore(5);
+        score.IncreaseScore(increaseAmount);
         // plant.GetComponent<PlantProduction>().BeginCountdown();
         anim.Play("CollectHarvest");
+        PlayerStats.Instance.numberOfHarvests++;
+        PlayerStats.Instance.numberOfGhosts--;
     }
 
     // void OnTriggerEnter2D(Collider2D collider)

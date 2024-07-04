@@ -26,9 +26,11 @@ public class Level0Manager : MonoBehaviour
 
     private void Start()
     {
+        PlayerStats.Instance.currentLevelKills = 0;
         movementHash = Animator.StringToHash("IsMoving");
         playerAnimator.SetTrigger("ShouldWake");
         playerAction.canAttack = false;
+        playerAction.canPlant = false;
         DialogueManage.Instance.PlayDialogue(dialogueText, initialText, delayBetweenLetters, delayBetweenWords);
         StartCoroutine(PlayCurrentMission());
     }

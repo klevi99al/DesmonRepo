@@ -53,9 +53,10 @@ public class StaticAttackArea : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collider)
     {
         // i am not sure why this script is contained in the enemies and in the player attack areas too, and it checks for the player only
-        // but if what we want to do is damage the player, im gonna remove this script from the player and keep it only in the enemies too
+        // but if what we want to do is damage the player, im gonna remove this script from the player and keep it only in the enemies
         if (collider.gameObject.layer == 9)
         {
+            Debug.Log(transform.name + " with parent: " + transform.parent+" more info: "+collider.transform.name);
             DamageProtagonist();
         }
     }

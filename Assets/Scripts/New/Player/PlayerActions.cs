@@ -12,8 +12,10 @@ public class PlayerActions : MonoBehaviour
     [Header("Player Harvest Properties")]
     [SerializeField] private Planting plantingScript;
 
-    [HideInInspector] public bool canAttack = true;
-    [HideInInspector] public bool isAttacking = false;
+    public bool canAttack = true;
+    public bool isAttacking = false;
+    public bool canPlant = false;
+
     private float attackTimer;
     private InputActionMap playerActionMap;
     private int attackHash;
@@ -59,8 +61,11 @@ public class PlayerActions : MonoBehaviour
 
     public void Plant(InputAction.CallbackContext context)
     {
-        Debug.Log("Pressed P");
-        plantingScript.ReplaceGhostPlantWithPlant();
+        if (canPlant)
+        {
+            Debug.Log("Pressed P");
+            plantingScript.PlantingAction();
+        }
     }
 
     public void Harvest(InputAction.CallbackContext context)

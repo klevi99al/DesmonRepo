@@ -19,7 +19,7 @@ public class EnemyMovement : MonoBehaviour
         rb =  GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        rb.freezeRotation = true;
+        if(rb != null ) rb.freezeRotation = true;
         protagonist =  GameObject.Find("/Protagonist");
 
         GameObject gridGameObject = GameObject.Find("Grid");

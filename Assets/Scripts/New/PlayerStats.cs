@@ -24,6 +24,9 @@ public class PlayerStats : MonoBehaviour
 
     public int playerKills;         // count all the kills
     public int currentLevelKills;   // count kills for the specific level, simply set this to zero each start of a new scene
+    public int nummberOfPlants;
+    public int numberOfHarvests;
+    public int numberOfGhosts;
 
     private void Awake()
     {

@@ -6,10 +6,9 @@ public class Door : MonoBehaviour
 {
     // Start is called before the first frame update
     // public ScoreManager scoreManager;
+    public bool canCheckForPlayer = true;
     private GameObject protagonist;
     private Score protagonistScore;
-    private ProtagonistBaseMovements protagonistMovement;
-    private ProtagonistHealth protagonistHealth;
     private SpriteRenderer protagonistSpriteRenderer;
     private Animator anim;
     private LevelLoader levelLoader;
@@ -17,8 +16,6 @@ public class Door : MonoBehaviour
     {
         protagonist = GameObject.Find("Protagonist");
         protagonistScore = protagonist.GetComponent<Score>();
-        protagonistMovement = protagonist.GetComponent<ProtagonistBaseMovements>();
-        protagonistHealth = protagonist.GetComponent<ProtagonistHealth>();
         protagonistSpriteRenderer = protagonist.GetComponent<SpriteRenderer>();
         levelLoader = GameObject.Find("LevelLoader").GetComponent<LevelLoader>();
         anim = GetComponent<Animator>();
@@ -26,10 +23,15 @@ public class Door : MonoBehaviour
 
    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if(collider.name=="Protagonist" && protagonistScore.score >= protagonistScore.winningScore){
-            anim.SetTrigger("DoorClose");
-            protagonistMovement.canMove = false;
-            StartCoroutine(LoadNextLevel());
+        // if its the player
+        if(collider.gameObject.layer == 9 && canCheckForPlayer)
+        {
+            if (protagonistScore.score >= protagonistScore.winningScore)
+            {
+                anim.SetTrigger("DoorClose");
+                //protagonistMovement.canMove = false;
+                StartCoroutine(LoadNextLevel());
+            }
         }
     }
 

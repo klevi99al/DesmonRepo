@@ -81,7 +81,8 @@ public class Enemy3Movement : EnemyMovement
     }
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if(collider.name=="Protagonist"){
+        if(collider.gameObject.layer == 9)
+        {
             Debug.Log("Protagonist entered");
             StopAllCoroutines();
             StartCoroutine(Attack());
@@ -89,7 +90,9 @@ public class Enemy3Movement : EnemyMovement
     }
      private void OnTriggerExit2D(Collider2D collider)
     {
-        if(collider.name=="Protagonist" && !takingDamage){
+        //if(collider.name=="Protagonist" && !takingDamage){
+        if (collider.gameObject.layer == 9 && !takingDamage)
+        {
             Debug.Log("Protagonist Existed");
             StopAllCoroutines();
             StartCoroutine(MoveAndStallRoutine());

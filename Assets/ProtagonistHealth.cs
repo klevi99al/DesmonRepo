@@ -24,6 +24,7 @@ public class ProtagonistHealth : MonoBehaviour
 
     public void Damage(int amount, GameObject enemy)
     {
+        Debug.Log("Damaging player:  " + enemy.name);
         if (canTakeDamage && amount > 0)
         {
             health -= amount;

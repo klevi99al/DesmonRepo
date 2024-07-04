@@ -12,27 +12,30 @@ public class Attack_area : MonoBehaviour
     public Animator anim; 
 
     public SpriteRenderer spriteRenderer;
+    public PlayerActions playerActions;
 
     private bool attackMaxReached = false;
 
 
-    private void OnTriggerEnter2D(Collider2D collider){
-
-        if(collider.GetComponent<Health>() != null )
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (playerActions.isAttacking)
         {
-            // attackMaxReached = true;
-            // StartCoroutine(ResetAttackMax());
-            //TODO: protagonist can attack multiple at once
-            //protagonistBaseMovement.AttackObject(collider);
-            Health componentHealth = collider.GetComponent<Health>();
-            componentHealth.Damage(damage);
-            if(componentHealth.health < 0)
+            if (collider.GetComponent<Health>() != null)
             {
-                PlayerStats.Instance.currentLevelKills++;
-                PlayerStats.Instance.playerKills++;
+                // attackMaxReached = true;
+                // StartCoroutine(ResetAttackMax());
+                //TODO: protagonist can attack multiple at once
+                //protagonistBaseMovement.AttackObject(collider);
+                Health componentHealth = collider.GetComponent<Health>();
+                componentHealth.Damage(damage);
+                if (componentHealth.health <= 0)
+                {
+                    PlayerStats.Instance.currentLevelKills++;
+                    PlayerStats.Instance.playerKills++;
+                }
+                gameObject.SetActive(false);
             }
-            gameObject.SetActive(false);
-            
         }
     }
 

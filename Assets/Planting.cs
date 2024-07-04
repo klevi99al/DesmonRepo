@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class Planting : MonoBehaviour
     private bool GhostPlaced = false;
     public Tile DiggableTile;
     public GameObject Plant2;
+    private PlayerActions playerActions;
     void Start()
     {
         // Find the Protagonist GameObject
@@ -23,6 +25,7 @@ public class Planting : MonoBehaviour
         protagonistRB = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
+        playerActions = GetComponent<PlayerActions>();
 
         if (protagonist == null)
         {
@@ -38,43 +41,66 @@ public class Planting : MonoBehaviour
                 Debug.LogError("Tilemap not found.");
             }
         }
+
+        if(Selector == null)
+        {
+            Selector = GameObject.Find("Selector");
+        }
     }
 
     void Update()
     {
         DisplaySelector();
 
-        if (Mathf.Abs(protagonistRB.velocity.x) > 0.1f || Mathf.Abs(protagonistRB.velocity.x) > 0.1f)
-        {
-            GhostPlaced = false;
-            GameObject ghostPlant = GameObject.Find("ghostPlant(Clone)");
-            Destroy(ghostPlant);
-        }
-        if (CanPlant() && !GhostPlaced && Input.GetKeyDown(KeyCode.P))
-        {
-            DisplayGhost();
-        }
-        else if (CanPlant() && GhostPlaced && Input.GetKeyDown(KeyCode.P))
-        {
-            ReplaceGhostPlantWithPlant();
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            Dig();
-        }
-        else if (Input.GetKeyDown(KeyCode.H))
-        {
-            Harvest();
-        }
-        else if (Input.GetKeyDown(KeyCode.U) && !GhostPlaced)
-        {
-            DisplayGhost();
-        }
-        else if (Input.GetKeyDown(KeyCode.U) && GhostPlaced)
-        {
-            Upgrade();
-        }
+        //if (Mathf.Abs(protagonistRB.velocity.x) > 0.1f || Mathf.Abs(protagonistRB.velocity.x) > 0.1f)
+        //{
+        //    GhostPlaced = false;
+        //    GameObject ghostPlant = GameObject.Find("ghostPlant(Clone)");
+        //    Destroy(ghostPlant);
+        //}
+        //if (CanPlant() && !GhostPlaced && Input.GetKeyDown(KeyCode.P))
+        //{
+        //    DisplayGhost();
+        //}
+        //else if (CanPlant() && GhostPlaced && Input.GetKeyDown(KeyCode.P))
+        //{
+        //    ReplaceGhostPlantWithPlant();
+        //}
+        //else if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    Dig();
+        //}
+        //else if (Input.GetKeyDown(KeyCode.H))
+        //{
+        //    Harvest();
+        //}
+        //else if (Input.GetKeyDown(KeyCode.U) && !GhostPlaced)
+        //{
+        //    DisplayGhost();
+        //}
+        //else if (Input.GetKeyDown(KeyCode.U) && GhostPlaced)
+        //{
+        //    Upgrade();
+        //}
 
+    }
+
+    public void PlantingAction()
+    {
+        if (CanPlant())
+        {
+            if (!GhostPlaced) DisplayGhost();
+            else ReplaceGhostPlantWithPlant();
+
+            StartCoroutine(PlayerPlantState());
+        }
+    }
+
+    private IEnumerator PlayerPlantState()
+    {
+        playerActions.canPlant = false;
+        yield return new WaitForSeconds(0.5f);
+        playerActions.canPlant = true;
     }
 
     public bool CanPlant()
@@ -129,15 +155,16 @@ public class Planting : MonoBehaviour
         // spawn a plant at the target position
         Instantiate(GhostPlant, spawnPosition, Quaternion.identity);
         GhostPlaced = true;
-
+        PlayerStats.Instance.numberOfGhosts++;
     }
     public void ReplaceGhostPlantWithPlant()
     {
+        PlayerStats.Instance.nummberOfPlants++;
         StartCoroutine(PlayPlantingAnimation());
         GameObject ghostPlant = GameObject.Find("ghostPlant(Clone)");
 
         Vector3Int ghostPlantTilePosition = tilemap.WorldToCell(ghostPlant.transform.position);
-        Vector3Int blockBelowSpawnPosition = new Vector3Int(ghostPlantTilePosition.x, ghostPlantTilePosition.y - 1, ghostPlantTilePosition.z);
+        Vector3Int blockBelowSpawnPosition = new(ghostPlantTilePosition.x, ghostPlantTilePosition.y - 1, ghostPlantTilePosition.z);
 
 
         // Instantiate the Plant prefab at the position and rotation of ghostPlant
@@ -200,8 +227,7 @@ public class Planting : MonoBehaviour
         if (selectedPlant)
         {
             StartCoroutine(PlayPlantingAnimation());
-            Vector3 plantPosition = selectedPlant.transform.position;
-            Quaternion plantRotation = selectedPlant.transform.rotation;
+            selectedPlant.transform.GetPositionAndRotation(out Vector3 plantPosition, out Quaternion plantRotation);
             Destroy(selectedPlant);
             GameObject upgradedPlant = Instantiate(Plant2, plantPosition, plantRotation);
             upgradedPlant.name = "plant";
